@@ -1,0 +1,10 @@
+[package]
+name = "stinglay"
+version = "0.1.0"
+authors = ["protom512"]
+edition = "2018"
+publish = false
+repository = "github.com/protom512/stinglay"
+
+[dependencies]
+failure="0.1"

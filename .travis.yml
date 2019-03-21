@@ -1,0 +1,56 @@
+language: rust
+rust: stable
+dist: xenial
+
+env:
+  global:
+    - RUST_STACKTRACE=full
+
+matrix:
+  include:
+    - os: osx
+      rust: stable
+      env: TARGET=x86_64-apple-darwin
+    - os: linux
+      rust: stable
+      env: TARGET=x86_64-unknown-linux-gnu
+      addons:
+        apt:
+          packages:
+            - libssl-dev
+          update: true
+    - os: linux
+      rust: stable
+      env: TARGET=i686-unknown-linux-gnu
+      addons:
+        apt:
+          packages:
+            - gcc-5-multilib
+            - lib32gcc-5-dev
+            - libssl-dev:i386
+          update: true
+
+before_script:
+  - rustc -V
+  - cargo -V
+  - if [[ "${TARGET}" == "i686-unknown-linux-gnu" ]]; then rustup target add $TARGET; fi
+  - git --version
+  - echo $TRAVIS_BRANCH
+  - git checkout $TRAVIS_BRANCH
+  - git rev-parse HEAD
+
+script:
+  - export PKG_CONFIG_ALLOW_CROSS=1
+  - cargo build --target $TARGET && file target/${TARGET}/debug/stinglay
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
+before_deploy:
+  - export PKG_CONFIG_ALLOW_CROSS=1
+  - cargo build --target $TARGET --release
+  - mkdir "stinglay-${TRAVIS_TAG}-${TARGET}"
+  - cp target/$TARGET/release/stinglay LICENSE.txt README.md stinglay.1 "stinglay-${TRAVIS_TAG}-${TARGET}"
+  - zip "stinglay-${TRAVIS_TAG}-${TARGET}.zip" -r "stinglay-${TRAVIS_TAG}-${TARGET}"
