@@ -33,7 +33,6 @@ matrix:
 before_script:
   - rustc -V
   - cargo -V
-  - if [[ "${TARGET}" == "i686-unknown-linux-gnu" ]]; then rustup target add $TARGET; fi
   - git --version
   - echo $TRAVIS_BRANCH
   - git checkout $TRAVIS_BRANCH
