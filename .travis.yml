@@ -19,16 +19,6 @@ matrix:
           packages:
             - libssl-dev
           update: true
-    - os: linux
-      rust: stable
-      env: TARGET=i686-unknown-linux-gnu
-      addons:
-        apt:
-          packages:
-            - gcc-5-multilib
-            - lib32gcc-5-dev
-            - libssl-dev:i386
-          update: true
 
 before_script:
   - rustc -V
